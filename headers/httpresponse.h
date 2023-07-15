@@ -21,7 +21,7 @@ public:
 
     ~HttpResponse();
 
-    void init(const std::string &srcDir, std::string &path, bool isKeepAlive = false, int code = -1);
+    void init(const std::string &srcDir, std::string &path,const std::string& Token, bool isKeepAlive = false, int code = -1);
 
     void makeResponse(Buffer &buff);
 
@@ -35,6 +35,7 @@ public:
 
     int code() const;
 
+    void SetCookie(std::string& cookie);
 private:
     void addStateLine_(Buffer &buff);
 
@@ -52,7 +53,7 @@ private:
     struct stat mmFileStat_;  /*发送的文件信息*/
     std::string path_;  /*返回的文件路径*/
     std::string srcDir_;  /*项目根目录*/
-
+    std::string _accessToken;
     static const std::unordered_map<std::string, std::string> SUFFIX_TYPE;  /*返回类型键值对*/
     static const std::unordered_map<int, std::string> CODE_STATUS;  /*状态码键值对*/
     static const std::unordered_map<int, std::string> CODE_PATH;  /*错误码与页面对应关系*/

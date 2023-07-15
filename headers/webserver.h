@@ -21,7 +21,16 @@
 #include"threadpool.h"
 #include"sqlconnpoll.h"
 #include"sqlconnRAII.h"
+#include"redisconnpool.h"
+#include "./net/reactor.h"
+#include "io_thread.h"
 
+
+struct FdAndNetaddr
+{
+    int fd;
+    sockaddr_in addr;
+};
 
 class WebServer {
 public:
@@ -33,6 +42,10 @@ public:
     ~WebServer();
 
     void start();
+
+    void MainAcceptCorFunc();
+    
+    FdAndNetaddr toAccept();
 
 private:
     static int setFdNonblock(int fd);
@@ -73,8 +86,12 @@ private:
     uint32_t listenEvent_;  /*监听描述符上的epoll事件*/
     uint32_t connEvent_;  /*监听描述符上的epoll事件*/
 
+    tinyrpc::Coroutine::ptr m_accept_cor;
+    bool m_is_stop_accept {false};
+    tinyrpc::IOThreadPool::ptr m_io_pool;
+    tinyrpc::Reactor* m_main_reactor {nullptr};
     std::unique_ptr<HeapTimer> timer_;  /*基于小根堆的定时器*/
-    std::unique_ptr<ThreadPool> threadPool_;  /*线程池*/
+    // std::unique_ptr<ThreadPool> threadPool_;  /*线程池*/
     std::unique_ptr<Epoller> epoller_;  /*epoller变量*/
     std::unordered_map<int,HttpConn> users_;  /*使用hash实现的文件描述符，这样可以用一个实例化一个，不用一开始就初始化很多个*/
 };

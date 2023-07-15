@@ -26,7 +26,6 @@ public:
             std::thread([pool = pool_] {
                 /*初始化一个unique lock后面通过此对象的lock与unlock方法进行加锁与解锁，这样比每次都初始化一个unique lock对象要省资源*/
                 std::unique_lock<std::mutex> locker(pool->mtx);
-
                 while (true) {
                     if (!pool->tasks.empty()) {
                         /*任务队列不为空，进入本段代码，采用右值的方式取出任务，任务取出成功，解锁，执行完任务重新获取锁*/

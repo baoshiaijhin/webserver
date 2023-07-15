@@ -1,0 +1,44 @@
+2023-03-05 17:38:37.897366 [info]:  =============Server init================
+2023-03-05 17:38:37.897409 [info]:  Port: 1316,OpenLinger: false
+2023-03-05 17:38:37.897414 [info]:  Listen Mode: ET, Conn Mode: ET
+2023-03-05 17:38:37.897416 [info]:  Log level: 1
+2023-03-05 17:38:37.897418 [info]:  srcDir: /home/yzs/my-WebServer/resources/
+2023-03-05 17:38:37.897580 [info]:  SqlConnPool num: 4, ThreadPool num: 12
+2023-03-05 17:38:37.912105 [error]: MySql Connect error!
+2023-03-05 17:38:37.912268 [error]: MySql Connect error!
+2023-03-05 17:38:37.912349 [error]: MySql Connect error!
+2023-03-05 17:38:37.912403 [error]: MySql Connect error!
+2023-03-05 17:38:37.913693 [error]: redis init error!
+2023-03-05 17:39:31.245502 [info]:  =============Server init================
+2023-03-05 17:39:31.245532 [info]:  Port: 1316,OpenLinger: false
+2023-03-05 17:39:31.245536 [info]:  Listen Mode: ET, Conn Mode: ET
+2023-03-05 17:39:31.245539 [info]:  Log level: 1
+2023-03-05 17:39:31.245542 [info]:  srcDir: /home/yzs/my-WebServer/resources/
+2023-03-05 17:39:31.245544 [info]:  SqlConnPool num: 4, ThreadPool num: 12
+2023-03-05 17:39:31.247239 [error]: MySql Connect error!
+2023-03-05 17:39:31.247619 [error]: MySql Connect error!
+2023-03-05 17:39:31.247867 [error]: MySql Connect error!
+2023-03-05 17:39:31.248090 [error]: MySql Connect error!
+2023-03-05 17:39:31.249593 [error]: redis init error!
+2023-03-05 17:39:45.463848 [info]:  =============Server init================
+2023-03-05 17:39:45.463876 [info]:  Port: 1316,OpenLinger: false
+2023-03-05 17:39:45.463879 [info]:  Listen Mode: ET, Conn Mode: ET
+2023-03-05 17:39:45.463881 [info]:  Log level: 1
+2023-03-05 17:39:45.463883 [info]:  srcDir: /home/yzs/my-WebServer/resources/
+2023-03-05 17:39:45.463884 [info]:  SqlConnPool num: 4, ThreadPool num: 12
+2023-03-05 17:39:45.480521 [error]: MySql Connect error!
+2023-03-05 17:39:45.480852 [error]: MySql Connect error!
+2023-03-05 17:39:45.481333 [error]: MySql Connect error!
+2023-03-05 17:39:45.481718 [error]: MySql Connect error!
+2023-03-05 17:39:45.481837 [error]: redis init error!
+2023-03-05 17:49:08.295370 [info]:  =============Server init================
+2023-03-05 17:49:09.146814 [info]:  Port: 1316,OpenLinger: false
+2023-03-05 17:49:09.388672 [info]:  Listen Mode: ET, Conn Mode: ET
+2023-03-05 17:49:09.559470 [info]:  Log level: 1
+2023-03-05 17:49:09.751814 [info]:  srcDir: /home/yzs/my-WebServer/resources/
+2023-03-05 17:49:10.130818 [info]:  SqlConnPool num: 4, ThreadPool num: 12
+2023-03-05 17:49:10.873591 [error]: MySql Connect error!
+2023-03-05 17:49:10.873656 [error]: MySql Connect error!
+2023-03-05 17:49:10.873665 [error]: MySql Connect error!
+2023-03-05 17:49:10.873674 [error]: MySql Connect error!
+2023-03-05 17:49:12.349444 [error]: redis init error!

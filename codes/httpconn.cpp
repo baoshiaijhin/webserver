@@ -1,8 +1,8 @@
 //
-// Created by zzh on 2022/4/20.
+// Created by yzs on 2023/3/14.
 //
 #include"httpconn.h"
-
+#include "coroutine/coroutine_pool.h"
 const char *HttpConn::srcDir;
 std::atomic<int> HttpConn::userCount;
 bool HttpConn::isET;
@@ -72,7 +72,11 @@ void HttpConn::close() {
         isClose_ = true;
         userCount--;
         /*使用全局作用域下的close函数，而不是自己类中这个*/
+        m_fd_event->unregisterFromReactor(); 
         ::close(fd_);
+        m_isstop= true;
+        tinyrpc::Coroutine::GetCurrentCoroutine()->setCanResume(false);
+        tinyrpc::Coroutine::Yield();
         LOG_INFO("Client[%d](%s:%d) quit, userCount: %d", fd_, getIP(), getPort(), (int) userCount)
     }
 }
@@ -80,33 +84,56 @@ void HttpConn::close() {
 /*
  * 根据文件描述符与socket地址初始化httpconn类实例
  */
-void HttpConn::init(int sockfd, const sockaddr_in &addr) {
+void HttpConn::init(int sockfd,tinyrpc::IOThread* io_thread,const sockaddr_in &addr){
     assert(sockfd > 0);
     userCount++;
     addr_ = addr;
     fd_ = sockfd;
-
+    
     /*初始化读写缓冲区以及标志httpconn是否开启的变量*/
     writeBuff_.retrieveAll();
     readBuff_.retrieveAll();
     isClose_ = false;
-
+    m_io_thread = io_thread;
+    m_reactor = m_io_thread->getReactor();
+    m_fd_event=tinyrpc::FdEventContainer::GetFdContainer()->getFdEvent(sockfd);
+    m_fd_event->setReactor(m_reactor);
+    m_loop_cor = tinyrpc::GetCoroutinePool()->getCoroutineInstanse();
     LOG_INFO("Client[%d](%s:%d) in, userCount: %d", sockfd, getIP(), getPort(), (int) userCount);
 }
 
+void HttpConn::loop() {
+   int ret = -1;
+    int readErrno = 0;
+    // while(!m_isstop) {
+    /*调用httpconn类的read方法，读取数据*/
+    ret = read(&readErrno);
+    if (ret <= 0 && readErrno != EAGAIN) {
+        /*若返回值小于0，且信号不为EAGAIN说明发生了错误*/
+        close();
+    }
+    /*调用onProcess函数解析数据*/
+    process();
+    ret = write(&readErrno);
+    close();
+    return;
+}
+
+
+void  HttpConn::initServer() {
+  m_loop_cor->setCallBack(std::bind(&HttpConn::loop, this));
+}
+
+void HttpConn::setUpServer() {
+     m_reactor->addCoroutine(m_loop_cor); 
+}
 /*
  * 读取socket中的数据，保存到读缓冲区中
  */
 ssize_t HttpConn::read(int *saveErrno) {
     ssize_t len = -1;
     /*如果是LT模式，那么只读取一次，如果是ET模式，会一直读取，直到读不出数据*/
-    do {
         len = readBuff_.readFd(fd_, saveErrno);
-        if (len <= 0) {
-            break;
-        }
-    } while (isET);
-
     return len;
 }
 
@@ -116,9 +143,10 @@ ssize_t HttpConn::read(int *saveErrno) {
  */
 ssize_t HttpConn::write(int *saveErrno) {
     ssize_t len = -1;
+    
     do {
         /*若是缓冲区满了，errno会返回EAGAIN，这时需要重新注册EPOLL上的EPOLLOUT事件*/
-        len = writev(fd_, iov_, iovCnt_);
+        len =tinyrpc::writev_hook(fd_, iov_, iovCnt_);
         if (len <= 0) {
             /*记录信号返回给调用函数*/
             *saveErrno = errno;
@@ -174,16 +202,15 @@ bool HttpConn::process() {
 
     HttpRequest::HTTP_CODE processStatus = request_.parse(readBuff_);
     if (processStatus == HttpRequest::GET_REQUEST) {
-        /*使用httprequest类对象解析请求内容，若解析完成，进入回复请求阶段，若失败进入下一个分支*/
         LOG_DEBUG("request path %s", request_.path().c_str());
         /*初始化一个httpresponse对象，负责http应答阶段*/
-        response_.init(srcDir, request_.path(), request_.isKeepAlive(), 200);
+        response_.init(srcDir, request_.path(),request_.getToken(),request_.isKeepAlive(), 200);
     } else if (processStatus == HttpRequest::NO_REQUEST) {
         /*请求没有读取完整，应该继续读取请求,返回false让上一层调用函数*/
         return false;
     } else {
         /*其他情况表示解析失败，则返回400错误*/
-        response_.init(srcDir, request_.path(), false, 400);
+        response_.init(srcDir, request_.path(),request_.getToken(),false, 400);
     }
     /*httpresponse负责拼装返回的头部以及需要发送的文件*/
     response_.makeResponse(writeBuff_);

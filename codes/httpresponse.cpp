@@ -64,7 +64,7 @@ HttpResponse::~HttpResponse() {
 /*
  * 根据参数初始化httpResponse中变量
  */
-void HttpResponse::init(const std::string &srcDir, std::string &path, bool isKeepAlive, int code) {
+void HttpResponse::init(const std::string &srcDir, std::string &path, const std::string& Token, bool isKeepAlive, int code) {
     assert(srcDir != "");
     /*如果mmFile_不为空，那么先取消对应的映射*/
     if (mmFile_) {
@@ -76,6 +76,7 @@ void HttpResponse::init(const std::string &srcDir, std::string &path, bool isKee
     srcDir_ = srcDir;
     mmFile_ = nullptr;
     mmFileStat_ = {0};
+    _accessToken = Token;
 }
 
 /*
@@ -119,7 +120,6 @@ void HttpResponse::unmapFile() {
         mmFile_ = nullptr;
     }
 }
-
 /*
  * 获取文件对应的返回类型
  */
@@ -256,7 +256,5 @@ void HttpResponse::makeResponse(Buffer &buff) {
     /*将返回信息中的 响应正文内容（服务器上的文件） 映射到内存中*/
     addContent_(buff);
 }
-
-
 
 

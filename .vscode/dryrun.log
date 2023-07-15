@@ -1,0 +1,64 @@
+make --dry-run --always-make --keep-going --print-directory
+make: Entering directory '/home/yzs/my-WebServer'
+/usr/bin/cmake -S/home/yzs/my-WebServer -B/home/yzs/my-WebServer --check-build-system CMakeFiles/Makefile.cmake 0
+/usr/bin/cmake -E cmake_progress_start /home/yzs/my-WebServer/CMakeFiles /home/yzs/my-WebServer/CMakeFiles/progress.marks
+make -f CMakeFiles/Makefile2 all
+make[1]: Entering directory '/home/yzs/my-WebServer'
+make -f CMakeFiles/my_WebServer.dir/build.make CMakeFiles/my_WebServer.dir/depend
+make[2]: Entering directory '/home/yzs/my-WebServer'
+cd /home/yzs/my-WebServer && /usr/bin/cmake -E cmake_depends "Unix Makefiles" /home/yzs/my-WebServer /home/yzs/my-WebServer /home/yzs/my-WebServer /home/yzs/my-WebServer /home/yzs/my-WebServer/CMakeFiles/my_WebServer.dir/DependInfo.cmake --color=
+make[2]: Leaving directory '/home/yzs/my-WebServer'
+make -f CMakeFiles/my_WebServer.dir/build.make CMakeFiles/my_WebServer.dir/build
+make[2]: Entering directory '/home/yzs/my-WebServer'
+/usr/bin/cmake -E cmake_echo_color --switch= --green --progress-dir=/home/yzs/my-WebServer/CMakeFiles --progress-num=1 "Building CXX object CMakeFiles/my_WebServer.dir/codes/buffer.cpp.o"
+/usr/bin/c++  -DNDEBUG -I/usr/include/mysql -I/home/yzs/my-WebServer/headers -I/home/yzs/hiredis  -g -std=gnu++14 -o CMakeFiles/my_WebServer.dir/codes/buffer.cpp.o -c /home/yzs/my-WebServer/codes/buffer.cpp
+/usr/bin/cmake -E cmake_echo_color --switch= --green --progress-dir=/home/yzs/my-WebServer/CMakeFiles --progress-num=2 "Building CXX object CMakeFiles/my_WebServer.dir/codes/epoller.cpp.o"
+/usr/bin/c++  -DNDEBUG -I/usr/include/mysql -I/home/yzs/my-WebServer/headers -I/home/yzs/hiredis  -g -std=gnu++14 -o CMakeFiles/my_WebServer.dir/codes/epoller.cpp.o -c /home/yzs/my-WebServer/codes/epoller.cpp
+/usr/bin/cmake -E cmake_echo_color --switch= --green --progress-dir=/home/yzs/my-WebServer/CMakeFiles --progress-num=3 "Building CXX object CMakeFiles/my_WebServer.dir/codes/heaptimer.cpp.o"
+/usr/bin/c++  -DNDEBUG -I/usr/include/mysql -I/home/yzs/my-WebServer/headers -I/home/yzs/hiredis  -g -std=gnu++14 -o CMakeFiles/my_WebServer.dir/codes/heaptimer.cpp.o -c /home/yzs/my-WebServer/codes/heaptimer.cpp
+/usr/bin/cmake -E cmake_echo_color --switch= --green --progress-dir=/home/yzs/my-WebServer/CMakeFiles --progress-num=4 "Building CXX object CMakeFiles/my_WebServer.dir/codes/httpconn.cpp.o"
+/usr/bin/c++  -DNDEBUG -I/usr/include/mysql -I/home/yzs/my-WebServer/headers -I/home/yzs/hiredis  -g -std=gnu++14 -o CMakeFiles/my_WebServer.dir/codes/httpconn.cpp.o -c /home/yzs/my-WebServer/codes/httpconn.cpp
+/usr/bin/cmake -E cmake_echo_color --switch= --green --progress-dir=/home/yzs/my-WebServer/CMakeFiles --progress-num=5 "Building CXX object CMakeFiles/my_WebServer.dir/codes/httprequest.cpp.o"
+/usr/bin/c++  -DNDEBUG -I/usr/include/mysql -I/home/yzs/my-WebServer/headers -I/home/yzs/hiredis  -g -std=gnu++14 -o CMakeFiles/my_WebServer.dir/codes/httprequest.cpp.o -c /home/yzs/my-WebServer/codes/httprequest.cpp
+/usr/bin/cmake -E cmake_echo_color --switch= --green --progress-dir=/home/yzs/my-WebServer/CMakeFiles --progress-num=6 "Building CXX object CMakeFiles/my_WebServer.dir/codes/httpresponse.cpp.o"
+/usr/bin/c++  -DNDEBUG -I/usr/include/mysql -I/home/yzs/my-WebServer/headers -I/home/yzs/hiredis  -g -std=gnu++14 -o CMakeFiles/my_WebServer.dir/codes/httpresponse.cpp.o -c /home/yzs/my-WebServer/codes/httpresponse.cpp
+/usr/bin/cmake -E cmake_echo_color --switch= --green --progress-dir=/home/yzs/my-WebServer/CMakeFiles --progress-num=7 "Building CXX object CMakeFiles/my_WebServer.dir/codes/io_thread.cc.o"
+/usr/bin/c++  -DNDEBUG -I/usr/include/mysql -I/home/yzs/my-WebServer/headers -I/home/yzs/hiredis  -g -std=gnu++14 -o CMakeFiles/my_WebServer.dir/codes/io_thread.cc.o -c /home/yzs/my-WebServer/codes/io_thread.cc
+/usr/bin/cmake -E cmake_echo_color --switch= --green --progress-dir=/home/yzs/my-WebServer/CMakeFiles --progress-num=8 "Building CXX object CMakeFiles/my_WebServer.dir/codes/log.cpp.o"
+/usr/bin/c++  -DNDEBUG -I/usr/include/mysql -I/home/yzs/my-WebServer/headers -I/home/yzs/hiredis  -g -std=gnu++14 -o CMakeFiles/my_WebServer.dir/codes/log.cpp.o -c /home/yzs/my-WebServer/codes/log.cpp
+/usr/bin/cmake -E cmake_echo_color --switch= --green --progress-dir=/home/yzs/my-WebServer/CMakeFiles --progress-num=9 "Building CXX object CMakeFiles/my_WebServer.dir/codes/redisconnpool.cpp.o"
+/usr/bin/c++  -DNDEBUG -I/usr/include/mysql -I/home/yzs/my-WebServer/headers -I/home/yzs/hiredis  -g -std=gnu++14 -o CMakeFiles/my_WebServer.dir/codes/redisconnpool.cpp.o -c /home/yzs/my-WebServer/codes/redisconnpool.cpp
+/usr/bin/cmake -E cmake_echo_color --switch= --green --progress-dir=/home/yzs/my-WebServer/CMakeFiles --progress-num=10 "Building CXX object CMakeFiles/my_WebServer.dir/codes/sqlconnpoll.cpp.o"
+/usr/bin/c++  -DNDEBUG -I/usr/include/mysql -I/home/yzs/my-WebServer/headers -I/home/yzs/hiredis  -g -std=gnu++14 -o CMakeFiles/my_WebServer.dir/codes/sqlconnpoll.cpp.o -c /home/yzs/my-WebServer/codes/sqlconnpoll.cpp
+/usr/bin/cmake -E cmake_echo_color --switch= --green --progress-dir=/home/yzs/my-WebServer/CMakeFiles --progress-num=11 "Building CXX object CMakeFiles/my_WebServer.dir/codes/webserver.cpp.o"
+/usr/bin/c++  -DNDEBUG -I/usr/include/mysql -I/home/yzs/my-WebServer/headers -I/home/yzs/hiredis  -g -std=gnu++14 -o CMakeFiles/my_WebServer.dir/codes/webserver.cpp.o -c /home/yzs/my-WebServer/codes/webserver.cpp
+/usr/bin/cmake -E cmake_echo_color --switch= --green --progress-dir=/home/yzs/my-WebServer/CMakeFiles --progress-num=12 "Building CXX object CMakeFiles/my_WebServer.dir/codes/xjwt.cpp.o"
+/usr/bin/c++  -DNDEBUG -I/usr/include/mysql -I/home/yzs/my-WebServer/headers -I/home/yzs/hiredis  -g -std=gnu++14 -o CMakeFiles/my_WebServer.dir/codes/xjwt.cpp.o -c /home/yzs/my-WebServer/codes/xjwt.cpp
+/usr/bin/cmake -E cmake_echo_color --switch= --green --progress-dir=/home/yzs/my-WebServer/CMakeFiles --progress-num=13 "Building CXX object CMakeFiles/my_WebServer.dir/coroutine/coroutine.cc.o"
+/usr/bin/c++  -DNDEBUG -I/usr/include/mysql -I/home/yzs/my-WebServer/headers -I/home/yzs/hiredis  -g -std=gnu++14 -o CMakeFiles/my_WebServer.dir/coroutine/coroutine.cc.o -c /home/yzs/my-WebServer/coroutine/coroutine.cc
+/usr/bin/cmake -E cmake_echo_color --switch= --green --progress-dir=/home/yzs/my-WebServer/CMakeFiles --progress-num=14 "Building CXX object CMakeFiles/my_WebServer.dir/coroutine/coroutine_hook.cc.o"
+/usr/bin/c++  -DNDEBUG -I/usr/include/mysql -I/home/yzs/my-WebServer/headers -I/home/yzs/hiredis  -g -std=gnu++14 -o CMakeFiles/my_WebServer.dir/coroutine/coroutine_hook.cc.o -c /home/yzs/my-WebServer/coroutine/coroutine_hook.cc
+/usr/bin/cmake -E cmake_echo_color --switch= --green --progress-dir=/home/yzs/my-WebServer/CMakeFiles --progress-num=15 "Building CXX object CMakeFiles/my_WebServer.dir/coroutine/coroutine_pool.cc.o"
+/usr/bin/c++  -DNDEBUG -I/usr/include/mysql -I/home/yzs/my-WebServer/headers -I/home/yzs/hiredis  -g -std=gnu++14 -o CMakeFiles/my_WebServer.dir/coroutine/coroutine_pool.cc.o -c /home/yzs/my-WebServer/coroutine/coroutine_pool.cc
+/usr/bin/cmake -E cmake_echo_color --switch= --green --progress-dir=/home/yzs/my-WebServer/CMakeFiles --progress-num=16 "Building CXX object CMakeFiles/my_WebServer.dir/coroutine/memory.cc.o"
+/usr/bin/c++  -DNDEBUG -I/usr/include/mysql -I/home/yzs/my-WebServer/headers -I/home/yzs/hiredis  -g -std=gnu++14 -o CMakeFiles/my_WebServer.dir/coroutine/memory.cc.o -c /home/yzs/my-WebServer/coroutine/memory.cc
+/usr/bin/cmake -E cmake_echo_color --switch= --green --progress-dir=/home/yzs/my-WebServer/CMakeFiles --progress-num=17 "Building CXX object CMakeFiles/my_WebServer.dir/net/fd_event.cc.o"
+/usr/bin/c++  -DNDEBUG -I/usr/include/mysql -I/home/yzs/my-WebServer/headers -I/home/yzs/hiredis  -g -std=gnu++14 -o CMakeFiles/my_WebServer.dir/net/fd_event.cc.o -c /home/yzs/my-WebServer/net/fd_event.cc
+/usr/bin/cmake -E cmake_echo_color --switch= --green --progress-dir=/home/yzs/my-WebServer/CMakeFiles --progress-num=18 "Building CXX object CMakeFiles/my_WebServer.dir/net/mutex.cc.o"
+/usr/bin/c++  -DNDEBUG -I/usr/include/mysql -I/home/yzs/my-WebServer/headers -I/home/yzs/hiredis  -g -std=gnu++14 -o CMakeFiles/my_WebServer.dir/net/mutex.cc.o -c /home/yzs/my-WebServer/net/mutex.cc
+/usr/bin/cmake -E cmake_echo_color --switch= --green --progress-dir=/home/yzs/my-WebServer/CMakeFiles --progress-num=19 "Building CXX object CMakeFiles/my_WebServer.dir/net/reactor.cc.o"
+/usr/bin/c++  -DNDEBUG -I/usr/include/mysql -I/home/yzs/my-WebServer/headers -I/home/yzs/hiredis  -g -std=gnu++14 -o CMakeFiles/my_WebServer.dir/net/reactor.cc.o -c /home/yzs/my-WebServer/net/reactor.cc
+/usr/bin/cmake -E cmake_echo_color --switch= --green --progress-dir=/home/yzs/my-WebServer/CMakeFiles --progress-num=20 "Building CXX object CMakeFiles/my_WebServer.dir/net/timer.cc.o"
+/usr/bin/c++  -DNDEBUG -I/usr/include/mysql -I/home/yzs/my-WebServer/headers -I/home/yzs/hiredis  -g -std=gnu++14 -o CMakeFiles/my_WebServer.dir/net/timer.cc.o -c /home/yzs/my-WebServer/net/timer.cc
+/usr/bin/cmake -E cmake_echo_color --switch= --green --progress-dir=/home/yzs/my-WebServer/CMakeFiles --progress-num=21 "Building CXX object CMakeFiles/my_WebServer.dir/main.cpp.o"
+/usr/bin/c++  -DNDEBUG -I/usr/include/mysql -I/home/yzs/my-WebServer/headers -I/home/yzs/hiredis  -g -std=gnu++14 -o CMakeFiles/my_WebServer.dir/main.cpp.o -c /home/yzs/my-WebServer/main.cpp
+/usr/bin/cmake -E cmake_echo_color --switch= --green --progress-dir=/home/yzs/my-WebServer/CMakeFiles --progress-num=22 "Building ASM object CMakeFiles/my_WebServer.dir/coroutine/coctx_swap.S.o"
+/usr/bin/cc -DNDEBUG -I/usr/include/mysql -I/home/yzs/my-WebServer/headers -I/home/yzs/hiredis  -g -o CMakeFiles/my_WebServer.dir/coroutine/coctx_swap.S.o -c /home/yzs/my-WebServer/coroutine/coctx_swap.S
+/usr/bin/cmake -E cmake_echo_color --switch= --green --bold --progress-dir=/home/yzs/my-WebServer/CMakeFiles --progress-num=23 "Linking CXX executable bin/my_WebServer"
+/usr/bin/cmake -E cmake_link_script CMakeFiles/my_WebServer.dir/link.txt --verbose=
+make[2]: Leaving directory '/home/yzs/my-WebServer'
+/usr/bin/cmake -E cmake_echo_color --switch= --progress-dir=/home/yzs/my-WebServer/CMakeFiles --progress-num=1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23 "Built target my_WebServer"
+make[1]: Leaving directory '/home/yzs/my-WebServer'
+/usr/bin/cmake -E cmake_progress_start /home/yzs/my-WebServer/CMakeFiles 0
+make: Leaving directory '/home/yzs/my-WebServer'
+ 

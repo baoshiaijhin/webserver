@@ -2,7 +2,9 @@
 // Created by zzh on 2022/4/20.
 //
 #include"webserver.h"
-
+#include "coroutine/coroutine.h"
+#include "coroutine/coroutine_hook.h"
+#include "coroutine/coroutine_pool.h"
 /*
  * 构造函数中初始化程序需要用到的资源
  */
@@ -11,7 +13,7 @@ WebServer::WebServer(int port, int trigMode, int timeoutMS, bool optLinger,
                      const char *dbName, int connPoolNum, int threadNum,
                      bool openLog, int logLevel, int logQueSize) :
         port_(port), openLinger_(optLinger), timeoutMS_(timeoutMS), isClose_(false),
-        timer_(new HeapTimer()), threadPool_(new ThreadPool(threadNum)), epoller_(new Epoller()) {
+        timer_(new HeapTimer()), epoller_(new Epoller()) {
     /*获取资源目录*/
     srcDir_ = getcwd(nullptr, 256);
     assert(srcDir_);
@@ -20,7 +22,6 @@ WebServer::WebServer(int port, int trigMode, int timeoutMS, bool optLinger,
     /*初始化http连接类的静态变量值以及数据库连接池*/
     HttpConn::userCount = 0;
     HttpConn::srcDir = srcDir_;
-    SqlConnPool::instance()->init("localhost", sqlPort, sqlUser, sqlPwd, dbName, connPoolNum);
 
     /*根据参数设置连接事件与监听事件的出发模式LT或ET*/
     initEventMode_(trigMode);
@@ -45,6 +46,11 @@ WebServer::WebServer(int port, int trigMode, int timeoutMS, bool optLinger,
             LOG_INFO("SqlConnPool num: %d, ThreadPool num: %d", connPoolNum, threadNum);
         }
     }
+   SqlConnPool::instance()->init("127.0.0.1", sqlPort, sqlUser, sqlPwd, dbName, connPoolNum);
+   //RedisConnPool::instance()->init("127.0.0.1",6379,20);
+   m_io_pool = std::make_shared<tinyrpc::IOThreadPool>(threadNum);
+   m_main_reactor = tinyrpc::Reactor::GetReactor();
+   m_main_reactor->setReactorType(tinyrpc::MainReactor);
 }
 
 /*
@@ -211,45 +217,45 @@ bool WebServer::initSocket_() {
 /*
  * 处理客户端连接事件
  */
-void WebServer::dealListen_() {
-    struct sockaddr_in addr;
-    socklen_t len = sizeof(addr);
+// void WebServer::dealListen_() {
+//     struct sockaddr_in addr;
+//     socklen_t len = sizeof(addr);
 
-    /*使用do-while很巧妙，因为无论如何都会进入一次循环体，如果监听事件设置为LT模式，则只会调用一次accept与addClient方法
-     * 若监听事件是ET模式，则会将连接一次性接受完，直到accept返回-1，表示当前没有连接了
-     */
-    do {
-        int fd = accept(listenFd_, (struct sockaddr *) &addr, &len);
-        if (fd < 0) {
-            return;
-        } else if (HttpConn::userCount >= MAX_FD) {
-            /*当前连接数太多，超过了预定义了最大数量，向客户端发送错误信息*/
-            sendError_(fd, "Server busy!");
-            LOG_WARN("Clients is full!");
-            return;
-        }
-        /*添加客户事件*/
-        addClient_(fd, addr);
-    } while (listenEvent_ & EPOLLET);
-}
+//     /*使用do-while很巧妙，因为无论如何都会进入一次循环体，如果监听事件设置为LT模式，则只会调用一次accept与addClient方法
+//      * 若监听事件是ET模式，则会将连接一次性接受完，直到accept返回-1，表示当前没有连接了
+//      */
+//     do {
+//         int fd = accept(listenFd_, (struct sockaddr *) &addr, &len);
+//         if (fd < 0) {
+//             return;
+//         } else if (HttpConn::userCount >= MAX_FD) {
+//             /*当前连接数太多，超过了预定义了最大数量，向客户端发送错误信息*/
+//             sendError_(fd, "Server busy!");
+//             LOG_WARN("Clients is full!");
+//             return;
+//         }
+//         /*添加客户事件*/
+//         addClient_(fd, addr);
+//     } while (listenEvent_ & EPOLLET);
+// }
 
 /*
  * 初始化httpconn类对象，添加对应连接的计时器，添加epoll监听事件
  */
-void WebServer::addClient_(int fd, sockaddr_in addr) {
-    assert(fd > 0);
-    /*初始化httpconn类对象*/
-    users_[fd].init(fd, addr);
-    if (timeoutMS_ > 0) {
-        /*若设置了超时事件，则需要向定时器里添加这一项*/
-        timer_->add(fd, timeoutMS_, std::bind(&WebServer::closeConn_, this, &users_[fd]));
-    }
-    /*添加epoll监听EPOLLIN事件，连接设置为非阻塞*/
-    epoller_->addFd(fd, EPOLLIN | connEvent_);
-    setFdNonblock(fd);
+// void WebServer::addClient_(int fd, sockaddr_in addr) {
+//     assert(fd > 0);
+//     /*初始化httpconn类对象*/
+//     users_[fd].init(fd, addr);
+//     if (timeoutMS_ > 0) {
+//         /*若设置了超时事件，则需要向定时器里添加这一项*/
+//         timer_->add(fd, timeoutMS_, std::bind(&WebServer::closeConn_, this, &users_[fd]));
+//     }
+//     /*添加epoll监听EPOLLIN事件，连接设置为非阻塞*/
+//     epoller_->addFd(fd, EPOLLIN | connEvent_);
+//     setFdNonblock(fd);
 
-    LOG_INFO("Client[%d] in!", users_[fd].getFd());
-}
+//     LOG_INFO("Client[%d] in!", users_[fd].getFd());
+// }
 
 /*
  * 表示对应连接上有读写事件发生，需要调整计时器中的过期时间
@@ -299,7 +305,7 @@ void WebServer::onRead_(HttpConn *client) {
 void WebServer::dealRead_(HttpConn *client) {
     assert(client);
     extentTime_(client);
-    threadPool_->addTask(std::bind(&WebServer::onRead_, this, client));
+    // threadPool_->addTask(std::bind(&WebServer::onRead_, this, client));
 }
 
 /*
@@ -337,57 +343,119 @@ void WebServer::onWrite_(HttpConn *client) {
 void WebServer::dealWrite_(HttpConn *client) {
     assert(client);
     extentTime_(client);
-    threadPool_->addTask(std::bind(&WebServer::onWrite_, this, client));
+    // threadPool_->addTask(std::bind(&WebServer::onWrite_, this, client));
 }
 
 /*
  * 启动服务器
  */
-void WebServer::start() {
-    /*epoll wait timeout == -1 无事件将阻塞，如果timeout大于0时才会设置超时信号，后面可以改为根据最接近的超时事件设置超时时长*/
-    int timeMS = -1;
-    if (!isClose_) {
-        LOG_INFO("================Server start================");
-    }
+// void WebServer::start() {
+//     /*epoll wait timeout == -1 无事件将阻塞，如果timeout大于0时才会设置超时信号，后面可以改为根据最接近的超时事件设置超时时长*/
+//     int timeMS = -1;
+//     if (!isClose_) {
+//         LOG_INFO("================Server start================");
+//     }
 
-    /*根据不同的事件调用不同的函数*/
-    while (!isClose_) {
-        /*每开始一轮的处理事件时，若设置了超时时间，那就处理一下超时事件*/
-        if (timeoutMS_ > 0) {
-            /*获取最近的超时时间，同时删除超时节点*/
-            timeMS = timer_->getNextTick();
-        }
-        /*epoll等待事件的唤醒，等待时间为最近一个连接会超时的时间*/
-        int eventCount = epoller_->wait(timeMS);
-        for (int i = 0; i < eventCount; i++) {
-            /*获取对应文件描述符与epoll事件*/
-            int fd = epoller_->getEventFd(i);
-            uint32_t events = epoller_->getEvents(i);
+//     /*根据不同的事件调用不同的函数*/
+//     while (!isClose_) {
+//         /*每开始一轮的处理事件时，若设置了超时时间，那就处理一下超时事件*/
+//         if (timeoutMS_ > 0) {
+//             /*获取最近的超时时间，同时删除超时节点*/
+//             timeMS = timer_->getNextTick();
+//         }
+//         /*epoll等待事件的唤醒，等待时间为最近一个连接会超时的时间*/
+//         int eventCount = epoller_->wait(timeMS);
+//         for (int i = 0; i < eventCount; i++) {
+//             /*获取对应文件描述符与epoll事件*/
+//             int fd = epoller_->getEventFd(i);
+//             uint32_t events = epoller_->getEvents(i);
 
-            /*根据不同情况进入不同分支*/
-            if (fd == listenFd_) {
-                /*若对应文件描述符为监听描述符，进入文件处理流程*/
-                dealListen_();
-            } else if (events & (EPOLLRDHUP | EPOLLHUP | EPOLLERR)) {
-                /*若epoll事件为 (EPOLLRDHUP | EPOLLHUP | EPOLLERR) 其中之一，表示连接出现问题，需要关闭该连接*/
-                assert(users_.count(fd) > 0);
-                closeConn_(&users_[fd]);
-            } else if (events & EPOLLIN) {
-                /*若epoll事件为EPOLLIN，表示有对应套接字收到数据，需要读取出来*/
-                assert(users_.count(fd) > 0);
-                dealRead_(&users_[fd]);
-            } else if (events & EPOLLOUT) {
-                /*若epoll事件为EPOLLOUT，表示返回给客户端的数据已准备好，需要向对应套接字连接发送数据*/
-                assert(users_.count(fd) > 0);
-                dealWrite_(&users_[fd]);
-            } else {
-                /*其余事件皆为错误，向log文件写入该事件*/
-                LOG_ERROR("Unexpected event");
-            }
-        }
-    }
+//             /*根据不同情况进入不同分支*/
+//             if (fd == listenFd_) {
+//                 /*若对应文件描述符为监听描述符，进入文件处理流程*/
+//                 dealListen_();
+//             } else if (events & (EPOLLRDHUP | EPOLLHUP | EPOLLERR)) {
+//                 /*若epoll事件为 (EPOLLRDHUP | EPOLLHUP | EPOLLERR) 其中之一，表示连接出现问题，需要关闭该连接*/
+//                 assert(users_.count(fd) > 0);
+//                 closeConn_(&users_[fd]);
+//             } else if (events & EPOLLIN) {
+//                 /*若epoll事件为EPOLLIN，表示有对应套接字收到数据，需要读取出来*/
+//                 assert(users_.count(fd) > 0);
+//                 dealRead_(&users_[fd]);
+//             } else if (events & EPOLLOUT) {
+//                 /*若epoll事件为EPOLLOUT，表示返回给客户端的数据已准备好，需要向对应套接字连接发送数据*/
+//                 assert(users_.count(fd) > 0);
+//                 dealWrite_(&users_[fd]);
+//             } else {
+//                 /*其余事件皆为错误，向log文件写入该事件*/
+//                 LOG_ERROR("Unexpected event");
+//             }
+//         }
+//     }
+// }
+
+
+
+FdAndNetaddr WebServer::toAccept() {
+
+	socklen_t len = 0;
+	int rt = 0;
+
+		sockaddr_in cli_addr;
+        FdAndNetaddr addr;
+		memset(&cli_addr, 0, sizeof(cli_addr));
+		len = sizeof(cli_addr);
+		// call hook accept
+		rt = tinyrpc::accept_hook(listenFd_, reinterpret_cast<sockaddr *>(&cli_addr), &len);
+        addr.addr = cli_addr;
+        addr.fd = rt;
+		if (rt == -1) {
+            LOG_DEBUG("error, no new client coming, errno=%d error=%s",errno,strerror(errno));
+			return addr;
+		}
+    //  LOG_INFO("New client accepted succ! fd:[%d], addr:[%s]",rt,)
+
+	return addr;	
 }
 
+void WebServer::MainAcceptCorFunc() {
+    
+    while (!m_is_stop_accept) {
+    FdAndNetaddr addr = toAccept();
+    if (addr.fd == -1) {
+      LOG_ERROR("accept ret -1 error, return, to yield")
+      tinyrpc::Coroutine::Yield();
+      continue;
+    }
+    
+
+    tinyrpc::IOThread *io_thread = m_io_pool->getIOThread();
+    HttpConn* conn=new HttpConn;
+    conn->init(addr.fd,io_thread,addr.addr);
+    conn->initServer();
+    conn->setUpServer();
+	// 	TcpConnection::ptr conn = addClient(io_thread, fd);
+	// 	conn->initServer();
+	// 	DebugLog << "tcpconnection address is " << conn.get() << ", and fd is" << fd;
+
+    // auto cb = [io_thread, conn]() mutable {
+    //   io_thread->addClient(conn.get());
+	// 		conn.reset();
+    // };
+
+    // io_thread->getReactor()->addCoroutine(conn->getCoroutine());
+  }
+}
+
+void WebServer::start() {
+    m_accept_cor = tinyrpc::GetCoroutinePool()->getCoroutineInstanse(); 
+    m_accept_cor->setCallBack(std::bind(&WebServer::MainAcceptCorFunc, this));
+
+    LOG_INFO("resume accept coroutine");
+	tinyrpc::Coroutine::Resume(m_accept_cor.get());
+	m_main_reactor->loop();
+
+}
 
 
 

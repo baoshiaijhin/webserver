@@ -1,0 +1,6 @@
+2023-03-08 23:13:21.844228 [info]:  =============Server init================
+2023-03-08 23:13:22.039684 [info]:  Port: 1316,OpenLinger: false
+2023-03-08 23:13:22.293064 [info]:  Listen Mode: ET, Conn Mode: ET
+2023-03-08 23:13:22.538184 [info]:  Log level: 1
+2023-03-08 23:13:22.849367 [info]:  srcDir: /home/yzs/my-WebServer/resources/
+2023-03-08 23:13:23.333903 [info]:  SqlConnPool num: 4, ThreadPool num: 12

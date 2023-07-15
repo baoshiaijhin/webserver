@@ -192,31 +192,27 @@ void Buffer::makeSpace_(size_t len) {
  * 读取socket中的数据
  */
 ssize_t Buffer::readFd(int fd, int *saveErrno) {
-    char buff[65535];
-    struct iovec iov[2];
     /*计算还能写入多少数据*/
-    const size_t writable = writableBytes();
-
-    /*分散读， 保证数据全部读完*/
-    iov[0].iov_base = beginPtr_() + writePos_;
-    iov[0].iov_len = writable;
-    iov[1].iov_base = buff;
-    iov[1].iov_len = sizeof(buff);
-
-    const ssize_t len = readv(fd, iov, 2);
-    if (len < 0) {
-        /*读取的数据长度小于0，那么肯定是发生错误了，将错误码返回*/
-        *saveErrno = errno;
-    } else if (static_cast<size_t>(len) <= writable) {
-        /*读取的数据比缓冲区小，那么可以正常读取，直接将读缓冲区指针移动到对应位置*/
-        hasWritten(len);
-    } else {
-        /*读取的数据比缓冲区大，首先将读取指针指到缓冲区尾部，然后再调用Append方法申请多出来的这一部分空间，并将数据复制过去*/
-        writePos_ = buffer_.size();
-        append(buff, len - writable);
+    bool read_all = false;
+    ssize_t rt;
+    while(!read_all) {
+       ensureWritable(1024);
+       const size_t writable = writableBytes(); 
+       char* read_index = beginPtr_() + writePos_;
+        rt = tinyrpc::read_hook(fd,read_index,writable);
+       if(rt<=0) {
+         *saveErrno = errno;
+         break;
+       } else if(rt==writable) {
+         hasWritten(rt);
+         continue;
+       } else if(rt<writable) {
+        hasWritten(rt);
+        read_all = true;
+        break;
+       }
     }
-
-    return len;
+    return rt;
 }
 
 /*

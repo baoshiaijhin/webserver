@@ -11,11 +11,13 @@
 #include<arpa/inet.h>
 #include<sys/types.h>
 
-#include"log.h"
 #include"buffer.h"
 #include"sqlconnRAII.h"
 #include"httprequest.h"
 #include"httpresponse.h"
+#include "redisconnpool.h"
+#include "net/reactor.h"
+#include "io_thread.h"
 
 class HttpConn {
 public:
@@ -23,8 +25,12 @@ public:
 
     ~HttpConn();
 
-    void init(int sockfd, const sockaddr_in &addr);
+    void init(int sockfd,tinyrpc::IOThread* io_thread,const sockaddr_in &addr);
+    
+    void loop();
 
+    void initServer();
+    void setUpServer();
     ssize_t read(int *saveErrno);
 
     ssize_t write(int *saveErrno);
@@ -38,7 +44,6 @@ public:
     const char *getIP() const;
 
     sockaddr_in getAddr() const;
-
     bool process();
 
     int toWriteBytes();
@@ -59,9 +64,13 @@ private:
 
     Buffer readBuff_;  /*读缓冲区*/
     Buffer writeBuff_;  /*写缓冲区*/
-
     HttpRequest request_;  /*包装的处理http请求的类*/
     HttpResponse response_;  /*包装的处理http回应的类*/
+    bool m_isstop;
+    tinyrpc::Coroutine::ptr m_loop_cor;
+    tinyrpc::FdEvent::ptr m_fd_event;
+    tinyrpc::IOThread* m_io_thread;
+    tinyrpc::Reactor* m_reactor;
 };
 
 #endif //MY_WEBSERVER_HTTPCONN_H

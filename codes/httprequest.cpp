@@ -2,7 +2,6 @@
 // Created by zzh on 2022/4/20.
 //
 #include"httprequest.h"
-
 /*
  * 保存默认界面名字的静态变量，所有对以下界面的请求都会加上 .html 后缀
  */
@@ -16,6 +15,17 @@ const std::unordered_set<std::string> HttpRequest::DEFAULT_HTML{
 const std::unordered_map<std::string, int> HttpRequest::DEFAULT_HTML_TAG{
         {"/register.html", 0},
         {"/login.html",    1}};
+
+std::vector<std::string> explode(const char* seperator, const char* source) {
+	std::string src = source; 
+    std::vector<std::string> res;
+	while (src.find(seperator) != std::string::npos) {
+		int wh = src.find(seperator);
+		res.push_back(src.substr(0, src.find(seperator)));
+		src = src.substr(wh + std::string(seperator).size());
+	} res.push_back(src);
+	return res;
+}
 
 /*
  * 构造函数中初始化
@@ -73,7 +83,19 @@ HttpRequest::PARSE_STATE HttpRequest::state() const {
 std::string &HttpRequest::path() {
     return path_;
 }
+void HttpRequest::setpath(const std::string& path)
+{
+     path_=path;
+}
 
+std::unordered_map<std::string, std::string>& HttpRequest::getHeader()
+{
+    return header_;
+}
+std::string HttpRequest::getToken()const
+{
+    return _accessToken;
+}
 /*
  * 上面函数的重载版本
  */
@@ -203,6 +225,8 @@ bool HttpRequest::parsePost_() {
                 bool isLogin = (tag == 1);
                 if (userVerify(post_["username"], post_["password"], isLogin)) {
                     /*验证成功，进入下一步，设置为成功页面*/
+                    auto accessToken=CreteToken(post_["username"]);
+                    _accessToken = accessToken;
                     path_ = "/welcome.html";
                 } else {
                     /*验证失败，设置返回错误页面*/
@@ -240,7 +264,7 @@ void HttpRequest::parseFromUrlencoded_() {
                 temp += ' ';
                 break;
             case '%':
-                /*浏览器会将非字母字母字符，encode成百分号+其ASCII码的十六进制*/
+                /*浏览器会将非字母字符，encode成百分号+其ASCII码的十六进制*/
                 /*%后面跟的是十六进制码,将十六进制转化为10进制*/
                 /*作者这里的实现是有一点问题，这里应该是转成ASCII码对应的字符的，而不是转换成对应的十进制字符，况且转化后的十进制也只能局限在0-99范围内*/
                 num = convertHex(body_[i + 1]) * 16 + convertHex(body_[i + 2]);
@@ -297,7 +321,7 @@ bool HttpRequest::userVerify(const std::string &name, const std::string &pwd, bo
         flag = true;
     }
     /* 查询用户及密码 */
-    snprintf(order, 256, "SELECT username, password FROM user WHERE username='%s' LIMIT 1", name.c_str());
+    snprintf(order, 256, "SELECT username, passwd FROM user WHERE username='%s' LIMIT 1", name.c_str());
     LOG_DEBUG("%s", order);
 
     if (mysql_query(sql, order)) {
@@ -428,3 +452,4 @@ HttpRequest::HTTP_CODE HttpRequest::parse(Buffer &buff) {
     /*最后最好直接返回NO_REQUEST状态，表示如果执行到这一部分，说明请求没有接受完整，需要继续接受请求，若是请求完整的在之前就会return出while*/
     return NO_REQUEST;
 }
+

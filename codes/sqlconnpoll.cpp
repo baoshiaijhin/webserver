@@ -42,7 +42,7 @@ void SqlConnPool::init(const char *host, int port, const char *user,
         }
         sql = mysql_real_connect(sql, host, user, pwd, dbName, port, nullptr, 0);
         if (!sql) {
-            LOG_ERROR("MySql Connect error!");
+                LOG_ERROR("MySql Connect error!");
         }
         /*将sql连接入队*/
         connQue_.push(sql);

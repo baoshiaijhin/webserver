@@ -1,7 +1,6 @@
 //
 // Created by zzh on 2022/4/19.
 //
-
 #ifndef MY_WEBSERVER_LOG_H
 #define MY_WEBSERVER_LOG_H
 
@@ -16,7 +15,6 @@
 
 #include"buffer.h"
 #include"blockqueue.h"
-
 
 class Log {
 public:

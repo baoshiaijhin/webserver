@@ -1,0 +1,40 @@
+2023-03-13 00:01:26.100291 [info]:  resume accept coroutine
+2023-03-13 00:01:31.155473 [info]:  =============Server init================
+2023-03-13 00:01:31.155568 [info]:  Port: 1316,OpenLinger: false
+2023-03-13 00:01:31.155663 [info]:  Listen Mode: ET, Conn Mode: ET
+2023-03-13 00:01:31.155677 [info]:  Log level: 1
+2023-03-13 00:01:31.155679 [info]:  srcDir: /home/yzs/my-WebServer/resources/
+2023-03-13 00:01:31.155713 [info]:  SqlConnPool num: 4, ThreadPool num: 12
+2023-03-13 00:03:19.386506 [info]:  =============Server init================
+2023-03-13 00:03:19.386525 [info]:  Port: 1316,OpenLinger: false
+2023-03-13 00:03:19.386528 [info]:  Listen Mode: ET, Conn Mode: ET
+2023-03-13 00:03:19.386530 [info]:  Log level: 1
+2023-03-13 00:03:19.386531 [info]:  srcDir: /home/yzs/my-WebServer/resources/
+2023-03-13 00:03:19.386584 [info]:  SqlConnPool num: 4, ThreadPool num: 12
+2023-03-13 00:04:06.027150 [info]:  =============Server init================
+2023-03-13 00:04:06.027176 [info]:  Port: 1316,OpenLinger: false
+2023-03-13 00:04:06.027179 [info]:  Listen Mode: ET, Conn Mode: ET
+2023-03-13 00:04:06.027181 [info]:  Log level: 1
+2023-03-13 00:04:06.027300 [info]:  srcDir: /home/yzs/my-WebServer/resources/
+2023-03-13 00:04:41.396014 [info]:  =============Server init================
+2023-03-13 00:04:41.396033 [info]:  Port: 1316,OpenLinger: false
+2023-03-13 00:04:41.396036 [info]:  Listen Mode: ET, Conn Mode: ET
+2023-03-13 00:04:41.396038 [info]:  Log level: 1
+2023-03-13 00:04:41.396039 [info]:  srcDir: /home/yzs/my-WebServer/resources/
+2023-03-13 00:04:41.396041 [info]:  SqlConnPool num: 4, ThreadPool num: 12
+2023-03-13 00:05:26.090890 [info]:  succ mmap [256000] bytes memory
+2023-03-13 00:06:09.997594 [info]:  =============Server init================
+2023-03-13 00:06:09.997615 [info]:  Port: 1316,OpenLinger: false
+2023-03-13 00:06:09.997618 [info]:  Listen Mode: ET, Conn Mode: ET
+2023-03-13 00:06:09.997620 [info]:  Log level: 1
+2023-03-13 00:06:09.997622 [info]:  srcDir: /home/yzs/my-WebServer/resources/
+2023-03-13 00:06:09.997623 [info]:  SqlConnPool num: 4, ThreadPool num: 12
+2023-03-13 00:06:33.231135 [info]:  succ mmap [12800] bytes memory
+2023-03-13 00:07:33.078306 [info]:  resume accept coroutine
+2023-03-13 00:08:13.726927 [info]:  =============Server init================
+2023-03-13 00:08:13.726951 [info]:  Port: 1316,OpenLinger: false
+2023-03-13 00:08:13.726955 [info]:  Listen Mode: ET, Conn Mode: ET
+2023-03-13 00:08:13.726956 [info]:  Log level: 1
+2023-03-13 00:08:13.726958 [info]:  srcDir: /home/yzs/my-WebServer/resources/
+2023-03-13 00:08:13.726960 [info]:  SqlConnPool num: 4, ThreadPool num: 12
+2023-03-13 00:08:15.144188 [info]:  succ mmap [12800] bytes memory
